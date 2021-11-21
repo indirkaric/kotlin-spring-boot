@@ -21,17 +21,17 @@ class UserService {
 
     fun getUser(id: Long): UserDto = UserMapper.toDto(findById(id))
 
-    private fun findById(id: Long): User {
-        val user = userRepository.findById(id)
-        if (user.isPresent)
-            return user.get()
-        throw NotFoundException(RestApiError.USER_NOT_FOUND)
-    }
-
     fun saveUser(createUserDto: CreateUserDto) {
         val user = userRepository.findByUsername(createUserDto.username)
         if (user != null)
             throw BadRequestException(RestApiError.USER_ALREADY_EXISTS)
         userRepository.save(UserMapper.toEntity(createUserDto))
+    }
+    
+    private fun findById(id: Long): User {
+        val user = userRepository.findById(id)
+        if (user.isPresent)
+            return user.get()
+        throw NotFoundException(RestApiError.USER_NOT_FOUND)
     }
 }
